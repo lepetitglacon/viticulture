@@ -1,0 +1,47 @@
+[
+  {
+    "name": "Alphonse Lavallée",
+    "type": "red",
+    "value": 2
+  },
+  {
+    "name": "Cardinal",
+    "type": "red",
+    "value": 3
+  },
+  {
+    "name": "Prima",
+    "type": "red",
+    "value": 2
+  },
+  {
+    "name": "Lival",
+    "type": "red",
+    "value": 1
+  },
+  {
+    "name": "Muscat de Hambourg",
+    "type": "red",
+    "value": 5
+  },
+  {
+    "name": "Ora",
+    "type": "white",
+    "value": 1
+  },
+  {
+    "name": "Danlas",
+    "type": "white",
+    "value": 2
+  },
+  {
+    "name": "Chasselas",
+    "type": "white",
+    "value": 3
+  },
+  {
+    "name": "Centennial",
+    "type": "white",
+    "value": 5
+  }
+]

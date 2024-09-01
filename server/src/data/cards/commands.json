@@ -1,0 +1,19 @@
+[
+  {
+    "name": "Famille Alfred",
+    "requirements": {
+      "red": 1,
+      "white": 1
+    },
+    "gold": 2
+  },
+  {
+    "name": "Famille Gagneur",
+    "requirements": {
+      "red": 1,
+      "white": 1,
+      "champagne": 1
+    },
+    "gold": 4
+  }
+]
