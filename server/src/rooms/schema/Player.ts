@@ -17,7 +17,7 @@ export class Player extends Schema {
     public buildings: Set<any>;
     public fields: Set<any>;
 
-    constructor(config) {
+    constructor() {
         super();
 
         this.name = 'unknown'

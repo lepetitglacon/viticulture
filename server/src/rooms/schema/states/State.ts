@@ -5,7 +5,7 @@ export class State extends Schema {
 
   @type({ map: Player }) players = new MapSchema<Player>();
 
-  @type("string") mySynchronizedProperty: string = "Hello world";
+  @type("boolean") started: boolean = false;
   @type("string") season: string = 'summer';
 
   constructor() {

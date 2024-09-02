@@ -24,6 +24,7 @@ export class MyRoom extends Room<State> {
           console.log(`Everyone is ready ! Starting in ${(this.timeToStartGame / 1000)}s`);
           this.gameStartTimeout = setTimeout(() => {
             console.log("Game started");
+            this.state.started = true
           }, this.timeToStartGame)
         }
       } else {
@@ -44,7 +45,7 @@ export class MyRoom extends Room<State> {
   }
 
   createPlayer(client: Client, options: any) {
-    this.state.players.set(client.sessionId, PlayerFactory.createPlayer({...options}))
+    this.state.players.set(client.sessionId, PlayerFactory.createPlayer(options))
   }
 
   onLeave (client: Client, consented: boolean) {
