@@ -3,6 +3,7 @@ import { Schema, Context, type } from "@colyseus/schema";
 export class Player extends Schema {
     @type("string") public name: string;
     @type("boolean") public ready: boolean;
+    @type("boolean") public hasTurn: boolean;
     @type("string") public color: string;
 
 
