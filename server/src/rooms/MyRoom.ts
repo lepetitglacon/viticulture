@@ -13,10 +13,8 @@ export class MyRoom extends Room<State> {
     this.setState(new State());
 
     this.onMessage("ready", (client, data = {}) => {
-
       const player = this.state.players.get(client.sessionId)
       player.ready = !player.ready
-
 
       if (player.ready) {
         console.log(client.sessionId, "is ready!");
@@ -37,6 +35,21 @@ export class MyRoom extends Room<State> {
       }
 
     });
+
+    let elapsedTime = 0;
+    let fixedTimeStep = 1000 / 60;
+    this.setSimulationInterval((deltaTime) => {
+      elapsedTime += deltaTime;
+
+      while (elapsedTime >= fixedTimeStep) {
+        elapsedTime -= fixedTimeStep;
+        this.fixedTick(fixedTimeStep);
+      }
+    });
+  }
+
+  fixedTick(deltaTime: number) {
+
   }
 
   onJoin (client: Client, options: any) {
