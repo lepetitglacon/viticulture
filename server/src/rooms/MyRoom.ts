@@ -35,10 +35,16 @@ export class MyRoom extends Room<State> {
 
   createPlayer(client: Client, options: any) {
     this.state.players.set(client.sessionId, PlayerFactory.createPlayer(options))
+    this.state.onMessage(client, 'chat', {
+      message: client.sessionId + " joined!"
+    })
   }
 
   onLeave (client: Client, consented: boolean) {
     console.log(client.sessionId, "left!");
+    this.state.onMessage(client, 'chat', {
+      message: client.sessionId + " left!"
+    })
     this.state.players.delete(client.sessionId);
   }
 

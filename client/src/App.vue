@@ -47,6 +47,19 @@
 	    </div>
 	  </template>
 
+
+    <div>
+      <ul v-if="state.chatMessages">
+        <li v-for="message of state.chatMessages.toArray()" :key="message.id">
+          <pre>{{ message.timestamp }} : {{ message.player.name }} : {{ message.message }}</pre>
+        </li>
+      </ul>
+      <form @submit.prevent="handleSendChatMessage">
+        <input v-model="chatMessageInput" type="text">
+        <input type="submit" value="Send" />
+      </form>
+    </div>
+
   </div>
 </template>
 
@@ -60,6 +73,7 @@ const {player: playerLocalStorageInfo} = usePlayer()
 const client = new Colyseus.Client('ws://localhost:2567');
 const rooms = ref([])
 const createRoomInput = ref()
+const chatMessageInput = ref()
 
 const changeNameInput = ref(playerLocalStorageInfo.value.name)
 async function handleNameChange() {
@@ -80,25 +94,7 @@ async function handleCreateRoom() {
 		  name: createRoomName,
 	    playerName: playerLocalStorageInfo.value.name
     })
-    console.log(connectedRoom.value.sessionId, "joined", connectedRoom.value.name);
-    isConnected.value = true
-
-    connectedRoom.value.state.onChange((e) => {
-      console.log('state change', e)
-      state.value = null
-      state.value = connectedRoom.value.state
-    })
-
-    connectedRoom.value.state.players.onAdd((player, sessionId) => {
-      player.onChange(() => {
-        state.value = null
-        state.value = connectedRoom.value.state
-        console.log(connectedRoom.value.state.players)
-      });
-    })
-    connectedRoom.value.state.players.onChange((player, sessionId) => {
-      console.log('onChange')
-    })
+    onConnect()
   }
   await listRooms()
 }
@@ -107,16 +103,20 @@ async function handleJoinRoom(e) {
   const roomId = e.target.dataset.roomId
 
   connectedRoom.value = await client.joinById(roomId, {
-	  playerName: playerLocalStorageInfo.value.name
+    playerName: playerLocalStorageInfo.value.name
   })
+  onConnect()
+}
+
+function onConnect() {
   console.log(connectedRoom.value.sessionId, "joined", connectedRoom.value.name);
   isConnected.value = true
 
-	connectedRoom.value.state.onChange((e) => {
-		console.log('state change', e)
-		state.value = null
-		state.value = connectedRoom.value.state
-	})
+  connectedRoom.value.state.onChange((e) => {
+    console.log('state change', e)
+    state.value = null
+    state.value = connectedRoom.value.state
+  })
 
   connectedRoom.value.state.players.onAdd((player, sessionId) => {
     player.onChange(() => {
@@ -128,6 +128,11 @@ async function handleJoinRoom(e) {
   connectedRoom.value.state.players.onChange((player, sessionId) => {
     console.log('onChange')
   })
+  connectedRoom.value.state.chatMessages.onChange(e => {
+    console.log('chatMessages onChange', e)
+    state.value = null
+    state.value = connectedRoom.value.state
+  })
 }
 
 function handleReady(e) {
@@ -138,9 +143,18 @@ async function listRooms() {
   return client.getAvailableRooms()
 }
 
+async function handleSendChatMessage(e) {
+  console.log(e)
+  console.log(chatMessageInput.value)
+  if (chatMessageInput.value !== '') {
+    connectedRoom.value.send('chat', {message: chatMessageInput.value})
+    state.value = null
+    state.value = connectedRoom.value.state
+  }
+}
+
 onMounted(async () => {
   rooms.value = await listRooms()
-
 })
 </script>
 
