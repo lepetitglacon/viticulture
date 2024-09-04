@@ -1,9 +1,11 @@
 import { Schema, Context, type } from "@colyseus/schema";
 
 export class Player extends Schema {
+    @type("string") public id: string;
     @type("string") public name: string;
     @type("boolean") public ready: boolean;
     @type("boolean") public hasTurn: boolean;
+    @type("boolean") public hasPlayedThisTurn: boolean;
     @type("string") public color: string;
 
 
@@ -23,6 +25,8 @@ export class Player extends Schema {
 
         this.name = 'unknown'
         this.ready = false
+        this.hasTurn = false
+        this.hasPlayedThisTurn = false
 
         this.points = 0
         this.golds = 0

@@ -5,36 +5,12 @@ import PlayerFactory from "../factory/PlayerFactory";
 export class MyRoom extends Room<State> {
   maxClients = 20;
 
-  players = new Map()
-  gameStartTimeout = null
-  timeToStartGame = 3000
-
   onCreate (options: any) {
     this.setState(new State());
 
-    this.onMessage("ready", (client, data = {}) => {
-      const player = this.state.players.get(client.sessionId)
-      player.ready = !player.ready
-
-      if (player.ready) {
-        console.log(client.sessionId, "is ready!");
-        if (this.state.isEveryoneReady()) {
-          console.log(`Everyone is ready ! Starting in ${(this.timeToStartGame / 1000)}s`);
-          this.gameStartTimeout = setTimeout(() => {
-            console.log("Game started");
-            this.state.started = true
-          }, this.timeToStartGame)
-        }
-      } else {
-        console.log(client.sessionId, "is not ready!");
-        player.ready = false
-        if (this.gameStartTimeout !== null) {
-          console.log("reset game start timer");
-          clearTimeout(this.gameStartTimeout);
-        }
-      }
-
-    });
+    this.onMessage('*', (client, type,  data) => {
+      this.state.onMessage(client, type, data)
+    })
 
     let elapsedTime = 0;
     let fixedTimeStep = 1000 / 60;
@@ -49,7 +25,7 @@ export class MyRoom extends Room<State> {
   }
 
   fixedTick(deltaTime: number) {
-
+    this.state.update(deltaTime)
   }
 
   onJoin (client: Client, options: any) {

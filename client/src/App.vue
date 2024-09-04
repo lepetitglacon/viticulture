@@ -26,7 +26,8 @@
 		  <p>Game start</p>
 
 		  <div v-for="[id, player] of state.players">
-			  <h3>{{ player.name }}</h3>
+
+			  <h3>{{id}} {{ player.name }}</h3>
 			  <p>{{ player.golds }}</p>
 			  <p>{{ player.points }}</p>
 		  </div>
@@ -76,8 +77,27 @@ async function handleCreateRoom() {
   const createRoomName = createRoomInput.value
   if (createRoomName !== '') {
     connectedRoom.value = await client.joinOrCreate('viticulture', {
-		name: createRoomName,
+		  name: createRoomName,
 	    playerName: playerLocalStorageInfo.value.name
+    })
+    console.log(connectedRoom.value.sessionId, "joined", connectedRoom.value.name);
+    isConnected.value = true
+
+    connectedRoom.value.state.onChange((e) => {
+      console.log('state change', e)
+      state.value = null
+      state.value = connectedRoom.value.state
+    })
+
+    connectedRoom.value.state.players.onAdd((player, sessionId) => {
+      player.onChange(() => {
+        state.value = null
+        state.value = connectedRoom.value.state
+        console.log(connectedRoom.value.state.players)
+      });
+    })
+    connectedRoom.value.state.players.onChange((player, sessionId) => {
+      console.log('onChange')
     })
   }
   await listRooms()
@@ -107,7 +127,6 @@ async function handleJoinRoom(e) {
   })
   connectedRoom.value.state.players.onChange((player, sessionId) => {
     console.log('onChange')
-
   })
 }
 
